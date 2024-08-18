@@ -9,6 +9,7 @@ use windows::{
 };
 
 mod init;
+mod patches;
 
 #[no_mangle]
 pub extern "system" fn DllMain(_dll_module: HINSTANCE, call_reason: u32, _reserved: isize) -> BOOL {

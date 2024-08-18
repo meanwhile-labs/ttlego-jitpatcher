@@ -55,6 +55,10 @@ pub unsafe fn init() -> Result<(), InitError> {
             }
         };
 
+        if !patch.enabled {
+            continue;
+        }
+
         let result = try_apply_patch(&patch);
         if let Err(err) = result {
             error_log!(

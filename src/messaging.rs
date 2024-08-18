@@ -14,4 +14,24 @@ macro_rules! error_log {
 		}
 	}
 }
+use std::ffi::CString;
+
 pub(crate) use error_log;
+use windows::{
+    core::PCSTR,
+    Win32::{
+        Foundation::HWND,
+        UI::WindowsAndMessaging::{MessageBoxA, MESSAGEBOX_STYLE},
+    },
+};
+
+pub unsafe fn show_message_box(title: &str, message: &str) {
+    let title = CString::new(title).unwrap();
+    let message = CString::new(message).unwrap();
+    MessageBoxA(
+        HWND::default(),
+        PCSTR::from_raw(message.as_ptr() as *const u8),
+        PCSTR::from_raw(title.as_ptr() as *const u8),
+        MESSAGEBOX_STYLE(0x00000000),
+    );
+}

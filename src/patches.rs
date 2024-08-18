@@ -1,19 +1,19 @@
 use serde::{Deserialize, Deserializer};
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct Patch {
-    name: String,
-    enabled: bool,
-    patches: Vec<PatchEntry>,
+    pub name: String,
+    pub enabled: bool,
+    pub patches: Vec<PatchEntry>,
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct PatchEntry {
     #[serde(deserialize_with = "hex_deserialize")]
-    offset: u32,
+    pub offset: u32,
     #[serde(deserialize_with = "hex_bytes_deserialize")]
-    original: Vec<u8>,
+    pub original: Vec<u8>,
     #[serde(deserialize_with = "hex_bytes_deserialize")]
-    patch: Vec<u8>,
+    pub patch: Vec<u8>,
 }
 
 #[cfg(test)]

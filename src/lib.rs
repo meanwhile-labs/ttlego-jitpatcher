@@ -8,12 +8,17 @@ use windows::{
     },
 };
 
+mod apply_patch;
 mod init;
 mod messaging;
 mod patches;
 
 #[no_mangle]
-pub extern "system" fn DllMain(_dll_module: HINSTANCE, call_reason: u32, _reserved: isize) -> BOOL {
+pub unsafe extern "system" fn DllMain(
+    _dll_module: HINSTANCE,
+    call_reason: u32,
+    _reserved: isize,
+) -> BOOL {
     const DLL_PROCESS_ATTACH: u32 = 1;
 
     match call_reason {

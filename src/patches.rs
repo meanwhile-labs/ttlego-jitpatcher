@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct Patch {
     name: String,
@@ -8,6 +8,7 @@ pub struct Patch {
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct PatchEntry {
+    #[serde(deserialize_with = "hex_deserialize")]
     offset: u32,
     original: Vec<u8>,
     patch: Vec<u8>,
@@ -45,4 +46,12 @@ mod test {
             }
         );
     }
+}
+
+fn hex_deserialize<'de, D>(deserializer: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    u32::from_str_radix(&s, 16).map_err(serde::de::Error::custom)
 }

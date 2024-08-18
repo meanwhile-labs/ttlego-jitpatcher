@@ -1,5 +1,5 @@
 name = "Skip splash screens"
-enabled = false
+enabled = true
 
 [[patches]]
 offset = "ca6ce"

@@ -69,14 +69,14 @@ pub enum TryApplyPatchError {
     Apply(usize, windows::core::Error),
 }
 impl TryApplyPatchError {
-    pub fn get_error_text(&self, patch: &Patch) -> String {
+    pub fn get_error_text(&self, _patch: &Patch) -> String {
         match self {
             TryApplyPatchError::Verify(failed_verifications) => failed_verifications
                 .iter()
                 .map(|(patch_num, err)| format!("- Patch #{}: {:?}", patch_num, err))
                 .collect::<Vec<_>>()
                 .join("\n"),
-            TryApplyPatchError::Apply(patch_num, err) => format!("{:?}", self),
+            TryApplyPatchError::Apply(_, _) => format!("{:?}", self),
         }
     }
 }
@@ -89,6 +89,14 @@ pub unsafe fn try_apply_patch(patch: &Patch) -> Result<(), TryApplyPatchError> {
             verify_errors.push((patch_num, err));
             continue;
         }
+    }
+
+    if !verify_errors.is_empty() {
+        return Err(TryApplyPatchError::Verify(verify_errors));
+    }
+
+    for (i, patch_entry) in patch.patches.iter().enumerate() {
+        let patch_num = i + 1;
         apply_patch_entry(patch_entry).map_err(|err| TryApplyPatchError::Apply(patch_num, err))?;
     }
     Ok(())

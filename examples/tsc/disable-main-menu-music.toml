@@ -1,0 +1,9 @@
+name = "Disable main menu music on startup"
+enabled = true
+
+[[patches]]
+offset = "28b42"
+# `mov byte ptr [esi + 0x6],0x1`
+original = "c6 46 06 01"
+# `mov byte ptr [esi + 0x6],0x0`
+patch =    "c6 46 06 00"

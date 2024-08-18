@@ -1,0 +1,9 @@
+name = "Skip splash screens"
+enabled = false
+
+[[patches]]
+offset = "ca6ce"
+# `jp LEGOStarWarsSaga.exe+CAD10`
+original = "0f 8a 3c 06 00 00"
+# `jmp LEGOStarWarsSaga.exe+CAD10 / nop`
+patch =    "e9 3d 06 00 00 90"

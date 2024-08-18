@@ -9,6 +9,7 @@ use windows::{
 };
 
 mod init;
+mod messaging;
 mod patches;
 
 #[no_mangle]

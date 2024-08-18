@@ -10,7 +10,9 @@ pub struct Patch {
 pub struct PatchEntry {
     #[serde(deserialize_with = "hex_deserialize")]
     offset: u32,
+    #[serde(deserialize_with = "hex_bytes_deserialize")]
     original: Vec<u8>,
+    #[serde(deserialize_with = "hex_bytes_deserialize")]
     patch: Vec<u8>,
 }
 
@@ -54,4 +56,22 @@ where
 {
     let s = String::deserialize(deserializer)?;
     u32::from_str_radix(&s, 16).map_err(serde::de::Error::custom)
+}
+
+fn hex_bytes_deserialize<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    let without_whitespace = s.replace(" ", "");
+    let chars = without_whitespace.chars().collect::<Vec<_>>();
+    let pairs: Vec<&[char]> = chars.chunks(2).collect();
+    let bytes = pairs
+        .into_iter()
+        .map(|pair| {
+            let pair: String = pair.iter().collect();
+            u8::from_str_radix(&pair, 16).map_err(serde::de::Error::custom)
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(bytes)
 }
